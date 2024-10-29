@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-2xl font-bold mb-4">Welcome, {{ user.customerprofile.company_name|default:user.username }}!</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-indigo-100 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-2">Active Projects</h3>
+                <p class="text-3xl font-bold">{{ active_projects_count }}</p>
+            </div>
+            <div class="bg-green-100 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-2">Completed Projects</h3>
+                <p class="text-3xl font-bold">{{ completed_projects_count }}</p>
+            </div>
+            <div class="bg-yellow-100 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-2">Recent Files</h3>
+                <p class="text-3xl font-bold">{{ recent_files_count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-xl font-bold mb-4">Recent Projects</h3>
+        <div class="space-y-4">
+            {% for project in recent_projects %}
+            <div class="border-b pb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h4 class="text-lg font-semibold">{{ project.name }}</h4>
+                        <p class="text-gray-600">{{ project.description|truncatewords:30 }}</p>
+                    </div>
+                    <a href="{% url 'project_detail' project.pk %}" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">View Details</a>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-600">No projects yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-xl font-bold mb-4">Recent Files</h3>
+        <div class="space-y-4">
+            {% for file in recent_files %}
+            <div class="flex justify-between items-center border-b pb-4">
+                <div>
+                    <h4 class="font-semibold">{{ file.description }}</h4>
+                    <p class="text-sm text-gray-600">{{ file.project.name }} - {{ file.get_file_type_display }}</p>
+                </div>
+                <a href="{{ file.file.url }}" class="text-indigo-600 hover:text-indigo-800">Download</a>
+            </div>
+            {% empty %}
+            <p class="text-gray-600">No files uploaded yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
